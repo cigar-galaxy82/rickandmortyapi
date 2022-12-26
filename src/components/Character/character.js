@@ -20,7 +20,7 @@ const styles = {
     color: 'white'
   }
 }
-
+//Single Card of each character
 function Character ({character}) {
     return (
       <div style={styles.characters}>

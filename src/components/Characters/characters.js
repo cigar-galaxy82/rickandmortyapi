@@ -1,5 +1,6 @@
 import Character from "../Character/character";
 
+//Load all characters 
 function Characters ({characters}) {
     return (
         <div className="charactersContainer">

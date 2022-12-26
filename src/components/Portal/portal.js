@@ -1,5 +1,6 @@
 import './portal.css'
 
+//This is the portal loader from Rick and Morty inspired from codepen project
 function Portal() {
   return (
     <div className="portal">
