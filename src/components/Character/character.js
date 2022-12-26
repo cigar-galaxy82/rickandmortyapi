@@ -31,7 +31,6 @@ function Character ({character}) {
           <p style={styles.details}> Species: {character.element.species} </p>
           <p style={styles.details}> Genter: {character.element.gender} </p>
           <p style={styles.details}> Origin: {character.element.origin.name} </p>
-          <a></a>
           <p style={styles.details}>Location: {character.element.location.name}</p>
           <p style={styles.details}>Number of Residents: {character.residents}</p>
         </div>
