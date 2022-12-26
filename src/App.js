@@ -3,59 +3,124 @@ import { useState, useEffect } from "react";
 import Portal from "./components/Portal/portal";
 import Characters from "./components/Card/card";
 
-
 function App() {
   const [loader, setLoader] = useState(false);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const [characters, setCharacters] = useState([]);
-  
+
   useEffect(() => {
-    (async() => {
-      const response = await fetch(`https://rickandmortyapi.com/api/character/?page=${page}`);
-      const json = await response.json();
-      setCharacters(json.results);
-      setPage((prevState) => prevState+1)
-      setLoader(true);
-    })()
+    (async () => {
+      nextCharacter();
+    })();
   }, []);
 
-  // useEffect(() => {
-  //   const nextbutton = document.getElementById("nextbutton")
-  //   if(nextbutton) {
-  //     console.log("DDD")
-  //     nextbutton.addEventListener("click", async() => {
-  //       setLoader(false)
-  //       const response = await fetch(`https://rickandmortyapi.com/api/character/?page=${page}`);
-  //       const json = await response.json();
-  //       setCharacters(json.results);
-  //       setPage((prevState) => prevState+1)
-  //       setLoader(true);
-  //     })
-  //   }
-  // }, [])
+  async function nextCharacter() {
+    setLoader(false);
+    setCharacters([]);
+    await fetch(`https://rickandmortyapi.com/api/character/?page=${page + 1}`)
+      .then((res) => {
+        res.json().then((res) => {
+          res.results.forEach(async (element) => {
+            if (element.location.url !== "") {
+              await fetch(element.location.url).then((res) => {
+                res
+                  .json()
+                  .then((res) => {
+                    let character = {
+                      element,
+                      residents: res.residents.length,
+                    };
+                    setCharacters((state) => [...state, character]);
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  });
+                setLoader(true);
+              });
+            } else {
+              let character = {
+                element,
+                residents: 0,
+              };
+              setCharacters((state) => [...state, character]);
+            }
+          });
+          setPage((prevState) => prevState + 1);
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 
-  async function newCharacter(){
-    setLoader(false)
-    const response = await fetch(`https://rickandmortyapi.com/api/character/?page=${page}`);
-    const json = await response.json();
-    setCharacters(json.results);
-    setPage((prevState) => prevState+1)
-    setLoader(true);
-  } 
+  async function prevCharacter() {
+    setLoader(false);
+    setCharacters([]);
+    setPage((prevState) => prevState - 1);
+    console.log(page);
+    await fetch(`https://rickandmortyapi.com/api/character/?page=${page - 1}`)
+      .then((res) => {
+        res.json().then((res) => {
+          res.results.forEach(async (element) => {
+            if (element.location.url !== "") {
+              await fetch(element.location.url).then((res) => {
+                res
+                  .json()
+                  .then((res) => {
+                    let character = {
+                      element,
+                      residents: res.residents.length,
+                    };
+                    setCharacters((state) => [...state, character]);
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  });
+                setLoader(true);
+              });
+            } else {
+              let character = {
+                element,
+                residents: 0,
+              };
+              setCharacters((state) => [...state, character]);
+            }
+          });
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 
   return (
-    <>
+    <div data-testid="app-1">
       {!loader ? (
         <Portal />
       ) : (
-        <div>
-          <Characters characters={characters}/>
-          <button id="nextbutton" onClick={newCharacter}>
+        <div className="App">
+          <Characters characters={characters} />
+          {page > 1 ? (
+            <button
+              id="pastbutton"
+              className="pagebutton"
+              onClick={prevCharacter}
+            >
+              Past
+            </button>
+          ) : (
+            ""
+          )}
+          <button
+            id="nextbutton"
+            className="pagebutton"
+            onClick={nextCharacter}
+          >
             Next
           </button>
         </div>
       )}
-    </>
+    </div>
   );
 }
 

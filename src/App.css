@@ -13,6 +13,15 @@
   }
 }
 
+.pagebutton {
+  padding: 10px;
+  font-size: 20px;
+}
+
+#pastbutton {
+  margin: 10px;
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -38,7 +47,7 @@
 }
 
 .charactersContainer{
-  margin-top: 40px;
+  margin: 40px;
 }
 
 @media (min-width: 1200px) {
